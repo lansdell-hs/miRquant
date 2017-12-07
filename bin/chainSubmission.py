@@ -142,7 +142,7 @@ def cutadapt_cmd(fi, lib, cutadapt, log, cfg):
     degen = get_degenerate_base_count(adapter)
     overlap -= degen
 
-    if degen > 0:
+    if degen > 0:                 #-g or -g ^adapter for 5' or anchored 5; adapter 
         cut_adapt_cmd = 'cutadapt -a {} -e {} -O {} -m {} -u {} \
                 --untrimmed-output={} --too-short-output={} -o {} {}'.format(
                         adapter, error_rate, overlap, min_read_length,
@@ -197,13 +197,12 @@ def bowtie(fi, length, BI, bowtie):
     logging.debug('Aligned reads file = {}'.format(aligned))
     logging.debug('Unaligned reads file = {}'.format(unaligned))
     if bowtie['quality'] == 33:
-        bt_cmd = 'bowtie -q -nomaqround -a -m 20 --phred33-quals \
-                -n 0 -e 70 -l {} --seed=197 --un {} {} {} {}'.format(
-                        length, unaligned, BI, fi, aligned)
+         bt_cmd = 'bowtie -q -nomaqround -a -m 20 -n 0 -e 70 -l {} hg19 --seed=197 --phred33-quals --un {} {} {}'.format(
+                        length, unaligned, fi, aligned)
     else:
-        bt_cmd = 'bowtie -q -nomaqround -m 20 --solexa1.3-quals \
-            -n 0 -e 70 -l {} --seed=197 --un {} {} {} {}'.format(
-                length, unaligned, BI, fi, aligned)
+        bt_cmd = 'bowtie -q -nomaqround -m 20 -n 0 -e 70 -l {} hg19 --seed=197 --solexal.3-quals --un {} {} {}'.format(
+                length, unaligned, fi, aligned)
+
     logging.info('Bowtie command = {}'.format(bt_cmd))
     pipe_to_logger(bt_cmd)
 
